@@ -2,6 +2,9 @@
 
 // core/Router.php
 
+// 정확한 코드 작성을 위해 타입체크
+declare(strict_types=1);
+
 namespace Core;
 
 
@@ -14,7 +17,7 @@ class Router{
 
 
         // 2. 컨트롤러 클래스명 만들기
-        $controllerClass = "App\\Controller\\".ucfirst($controllerName) . "Conteroller";
+        $controllerClass = "App\\Controller\\".ucfirst($controllerName) . "Controller";
         // App\Controller\HomeController 는 호출할 컨트롤러 클래스 경로를 말함.
         // ucfirst 는 첫글자를 대문자로 변환해주는 내장함수 위에 코드로보면 home-> HomeConteroller 이 된다
 
