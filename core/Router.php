@@ -2,6 +2,9 @@
 
 // core/Router.php
 
+namespace Core;
+
+
 class Router{
     public function run(){
         // 1. URL 파싱하기
