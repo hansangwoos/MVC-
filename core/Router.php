@@ -10,28 +10,35 @@ namespace Core;
 
 class Router{
     public function run(){
-        // 1. URL 파싱하기
-        $controllerName = $_GET['controller'] ?? 'home';
-        // $_GET['controller'] 은 URL에서 컨트롤러 이름 추출  ex) ?controller=user 만약 없으면 home 
-        $actionName = $_GET['action'] ?? 'index';
+        // 1. 현재 url 가져오기
+        $uri = parse_url($_SERVER["REQUEST_URI"],PHP_URL_PATH);
+        $uri = trim($uri,"/");
 
+        // 2. explode 로 uri 나누기
+        $segments = explode("/",$uri);
 
-        // 2. 컨트롤러 클래스명 만들기
-        $controllerClass = "App\\Controller\\".ucfirst($controllerName) . "Controller";
-        // App\Controller\HomeController 는 호출할 컨트롤러 클래스 경로를 말함.
-        // ucfirst 는 첫글자를 대문자로 변환해주는 내장함수 위에 코드로보면 home-> HomeConteroller 이 된다
+        // 3. 경로기반으로 controller/action/parameter 분리
+        $controllerName = $segments[0] ?? "home"; //예 : / home
+        $actionName = $segments[1] ?? "index"; // 예 : /home/index
+        $parameter = $segments[2] ?? null; // 예 /user/show/5 -> 5
 
-        // 3. 클래스와 메서드가 존재하면 실행
+        $controllerClass = "App\\Controller\\". ucfirst($controllerName). "Controller";
 
-        if(class_exists($controllerClass) && method_exists($controllerClass, $actionName)){
-        // method_exists : 해당 메서드가 클래스에 있는지 확인
+        if(class_exists($controllerClass)){
             $controller = new $controllerClass();
-            // 동적으로 객체 생성   
-            $controller->$actionName();
-            // 동적으로 메서드 생성
-        }else {
-            echo "요청한 페이지를 찾을 수 없습니다.";
+
+            if(method_exists($controller,$actionName)){
+                if($parameter){
+                    $controller->$actionName($parameter);
+                }else {
+                    $controller->$actionName();
+                }
+                return;
+            }
         }
+
+        // 404
+        echo "<h2 style='color:red;'>404 Not Found: {$controllerClass} → {$actionName}()</h2>";
     }
 
 }

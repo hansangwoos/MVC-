@@ -7,11 +7,22 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Model\User;
+
+
+
 class HomeController {
 
     public function index(){
-        echo "<h1>HomeController → index 메서드가 실행되었습니다!</h1>";
+
+        $userModel = new User();
+        $users = $userModel->getAlluser();
+        
+        require_once __DIR__ ."/../../app/View/home.php";
+        // __DIR__ : 현재 파일경로
+        // Controller 에서 View/home.php로 이동하는것
     }
+
 
 }
 
